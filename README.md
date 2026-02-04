@@ -90,6 +90,22 @@ Other parameters, such as project/experiment naming and model checkpoint saving 
 
 If you have any questions or run into issues, please feel free to open an issue for discussion. You can also reach me at **[shenyunzhi@smail.nju.edu.cn](mailto:shenyunzhi@smail.nju.edu.cn)**.
 
+## Citation
+
+If you find this repository useful, please consider citing:
+
+```bibtex
+@misc{shen2026pegrlimprovingmachinetranslation,
+  title={PEGRL: Improving Machine Translation by Post-Editing Guided Reinforcement Learning},
+  author={Yunzhi Shen and Hao Zhou and Xin Huang and Xue Han and Junlan Feng and Shujian Huang},
+  year={2026},
+  eprint={2602.03352},
+  archivePrefix={arXiv},
+  primaryClass={cs.CL},
+  url={https://arxiv.org/abs/2602.03352}
+}
+```
+
 ## Acknowledgments
 
 Our codebase is built upon the work of [MT-R1-Zero](https://github.com/fzp0424/MT-R1-Zero) and [Verl](https://github.com/verl-project/verl). We extend our sincere thanks to their projects.
