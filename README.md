@@ -1,6 +1,35 @@
 # PEGRL
 
-### Improving Machine Translation by Post-Editing Guided Reinforcement Learning
+<div align="center">
+
+<p align="center">
+<em>A reinforcement learning framework for improving machine translation via post-editing guidance.</em>
+</p>
+
+<br>
+
+<div align="center">
+<a href="./assets/pegrl.pdf">
+  <img src="./assets/pegrl.svg" width="75%">
+</a>
+
+</div>
+
+<br>
+
+[![ACL](https://img.shields.io/badge/ACL-Anthology-4b4b4b?style=for-the-badge)]()
+[![Paper](https://img.shields.io/badge/Paper-arXiv-b31b1b?style=for-the-badge&logo=arxiv&logoColor=white)](https://arxiv.org/abs/2602.03352)
+[![Code](https://img.shields.io/badge/Code-GitHub-black?style=for-the-badge&logo=github)](https://github.com/NJUNLP/peg-rl)
+
+</div>
+
+
+
+## 🎉News
+- **[2026/04/06]** 🎉 PEGRL has been accepted to **Findings of ACL 2026**!
+
+
+## Introduction
 
 **PEGRL** is a two-stage reinforcement learning (RL) framework for machine translation that leverages post-editing as an auxiliary task to stabilize training and guide optimization. While RL has shown strong promise in LLM-based MT (e.g., GRPO), translation-oriented RL suffers from noisy Monte Carlo return estimates and large trajectory spaces, often favoring global over local optimization.
 
