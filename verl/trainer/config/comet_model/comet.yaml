@@ -16,7 +16,7 @@ model_list:
   # - [xcomet-xl, /home/nfs05/model/XCOMET-XL/checkpoints/model.ckpt]
 
 # ppo_mini_batch_size: 128
-# 64 for A6000(64GB), 144 for A100(80GB)
-forward_micro_batch_size: 64
+# 64 for A6000(48GB), 144 for A100(80GB)
+forward_micro_batch_size: 48
 ulysses_sequence_parallel_size: 1 # sp size
 use_dynamic_bsz: false

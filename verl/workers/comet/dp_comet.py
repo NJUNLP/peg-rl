@@ -21,7 +21,10 @@ import gc
 
 from verl import DataProto
 from verl.workers.comet import BaseCOMETModel
+from verl.utils.device import get_device_name
 
+
+device_name = get_device_name()
 
 __all__ = ['DataParallelCOMET']
 
@@ -44,7 +47,19 @@ class DataParallelCOMET(BaseCOMETModel):
         # gc.collect()
         # gc.collect(2)
         print(f"dp_comet.py forward micro_batch: {batch_size}")
-        comet_output = self.comet_model.predict(batch, batch_size=batch_size, gpus=1, num_workers=0)
+        acc = "auto"
+        if device_name == "npu":
+            from verl.workers.comet.npu import NPUAccelerator
+            from pytorch_lightning.strategies.single_device import SingleDeviceStrategy
+            acc = NPUAccelerator()
+        comet_output = self.comet_model.predict(
+            batch, 
+            batch_size=batch_size, 
+            gpus=1, 
+            num_workers=0, 
+            accelerator=acc,
+            strategy=SingleDeviceStrategy(device=device_name)
+        )
         
         # return comet_output.scores #for example: [0.84, 0.77, ...]
         return [float(score) * 100 for score in comet_output.scores]

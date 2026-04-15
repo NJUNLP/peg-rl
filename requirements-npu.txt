@@ -19,3 +19,4 @@ torchdata
 einops
 qwen_vl_utils
 torchvision==0.20.1
+setuptools==78.1.1

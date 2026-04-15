@@ -1901,7 +1901,7 @@ class COMETWorker(Worker):
         dp = world_size // self.ulysses_sequence_parallel_size
         if self.ulysses_sequence_parallel_size > 1:
             self.ulysses_device_mesh = init_device_mesh(
-                'cuda',
+                device_name,
                 mesh_shape=(dp, self.ulysses_sequence_parallel_size),
                 mesh_dim_names=['dp', 'sp']
             )
@@ -1945,12 +1945,15 @@ class COMETWorker(Worker):
         self.comet_module = load_from_checkpoint(ckpt_path, reload_hparams=True)
         self.comet = DataParallelCOMET(config=self.config, comet_module=self.comet_module, tokenizer=self.tokenizer)
 
-        torch.cuda.empty_cache()
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+        elif torch.npu.is_available():
+            torch.npu.empty_cache()
 
     @register(dispatch_mode=Dispatch.DP_COMPUTE_PROTO)
     def compute_comet_rm(self, data: DataProto):
 
-        data = data.to('cuda')
+        data = data.to(device_name)
         micro_batch_size = self.config.forward_micro_batch_size
         data.meta_info['micro_batch_size'] = micro_batch_size
         data.meta_info['use_dynamic_bsz'] = self.config.use_dynamic_bsz
@@ -1962,13 +1965,16 @@ class COMETWorker(Worker):
             output = self.ulysses_sharding_manager.postprocess_data(data=output)
         output = output.to('cpu')
 
-        torch.cuda.empty_cache()
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+        elif torch.npu.is_available():
+            torch.npu.empty_cache()
         return output
 
     @register(dispatch_mode=Dispatch.DP_COMPUTE_PROTO)
     def compute_valid_comet(self, data: DataProto):
 
-        data = data.to('cuda')
+        data = data.to(device_name)
         micro_batch_size = self.config.forward_micro_batch_size
         data.meta_info['micro_batch_size'] = micro_batch_size
         data.meta_info['use_dynamic_bsz'] = self.config.use_dynamic_bsz
@@ -1980,7 +1986,10 @@ class COMETWorker(Worker):
             output = self.ulysses_sharding_manager.postprocess_data(data=output)
         output = output.to('cpu')
 
-        torch.cuda.empty_cache()
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+        elif torch.npu.is_available():
+            torch.npu.empty_cache()
         return output
     
 
@@ -2006,7 +2015,7 @@ class EmbeddingWorker(Worker):
         dp = world_size // self.ulysses_sequence_parallel_size
         if self.ulysses_sequence_parallel_size > 1:
             self.ulysses_device_mesh = init_device_mesh(
-                'cuda',
+                device_name,
                 mesh_shape=(dp, self.ulysses_sequence_parallel_size),
                 mesh_dim_names=['dp', 'sp']
             )
@@ -2037,7 +2046,7 @@ class EmbeddingWorker(Worker):
         tokenizer_path = copy_to_local(self.config.model_path)
         self.tokenizer = hf_tokenizer(tokenizer_path)
 
-        self.model = AutoModel.from_pretrained(self.config.model_path, attn_implementation="flash_attention_2", torch_dtype=torch.float16).cuda()
+        self.model = AutoModel.from_pretrained(self.config.model_path, attn_implementation="flash_attention_2", torch_dtype=torch.float16).to(device_name)
         auto_wrap_policy = get_fsdp_wrap_policy(module=self.model, config=self.config.fsdp_config)
 
         fsdp_mesh = self.device_mesh
@@ -2076,7 +2085,7 @@ class EmbeddingWorker(Worker):
     @register(dispatch_mode=make_nd_compute_dataproto_dispatch_fn(mesh_name="embed_reward"))
     def compute_embed_rm(self, data: DataProto):
 
-        data = data.to('cuda')
+        data = data.to(device_name)
         # perform forward computation
         with self.ulysses_sharding_manager:
             data = self.ulysses_sharding_manager.preprocess_data(data=data)
@@ -2090,7 +2099,7 @@ class EmbeddingWorker(Worker):
     @register(dispatch_mode=make_nd_compute_dataproto_dispatch_fn(mesh_name="embed_reward"))
     def compute_valid_embed(self, data: DataProto):
 
-        data = data.to('cuda')
+        data = data.to(device_name)
         # perform forward computation
         with self.ulysses_sharding_manager:
             data = self.ulysses_sharding_manager.preprocess_data(data=data)
