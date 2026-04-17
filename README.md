@@ -45,12 +45,38 @@ PEGRL addresses these challenges by:
 
 Our software environment is based on Python 3.11. The main upper-level Python packages include **verl**, **sacrebleu**, and **unbabel-comet**. You can build the software environment using the following script:
 
+First, install COMET:
+
+```bash
+git clone https://github.com/dgme-syz/COMET.git && cd COMET && git checkout feature/support-custom-strategy && pip install -e .
+```
+
+Then, prepare the dependencies required for the training framework: 
+
+```
+
 ```bash
 USE_SGLANG=0 USE_MEGATRON=0 bash scripts/install_vllm_sglang_mcore.sh
-pip install sacrebleu "sacrebleu[ja]" "sacrebleu[ko]" unbabel-comet
+pip install sacrebleu "sacrebleu[ja]" "sacrebleu[ko]" 
 ```
 
 We provide a Conda environment file for reference. We recommend using the installation script above for setup. The [env.yaml](./env.yaml) file is intended for reference only.
+
+<details>
+<summary><strong>Ascend</strong></summary>
+
+For Ascend users, run the following:
+
+```bash
+git clone https://github.com/dgme-syz/COMET.git && cd COMET && git checkout feature/support-custom-strategy && pip install -e .
+pip install vllm==0.11.0
+pip install vllm-ascend==0.11.0rc1
+pip install -r requirements-npu.txt
+pip install -e .
+pip install sacrebleu "sacrebleu[ja]" "sacrebleu[ko]"
+```
+
+</details>
 
 ## Model
 
@@ -99,6 +125,8 @@ All experiment scripts are organized by category under [train_scripts](./train_s
 
 ```bash
 bash train_scripts/main/train_0_4B_en2fi_ours.sh
+# Or ascend
+bash train_scripts/main_ascend/train_0_4B_en2fi_ours.sh
 ```
 
 For the experiment scripts, you may adjust two per-GPU batch parameters based on the available GPU memory:
@@ -114,6 +142,8 @@ For the experiment scripts, you may adjust two per-GPU batch parameters based on
   * 128 for A100 (80G), H20 (96G)
 
 Other parameters, such as project/experiment naming and model checkpoint saving frequency, **can be modified if necessary, but changes beyond these are not recommended**.
+
+
 
 ## Q&A
 

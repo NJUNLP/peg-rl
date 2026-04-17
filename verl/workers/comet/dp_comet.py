@@ -48,9 +48,9 @@ class DataParallelCOMET(BaseCOMETModel):
         # gc.collect(2)
         print(f"dp_comet.py forward micro_batch: {batch_size}")
         acc = "auto"
+        from pytorch_lightning.strategies.single_device import SingleDeviceStrategy
         if device_name == "npu":
             from verl.workers.comet.npu import NPUAccelerator
-            from pytorch_lightning.strategies.single_device import SingleDeviceStrategy
             acc = NPUAccelerator()
         comet_output = self.comet_model.predict(
             batch, 
@@ -58,7 +58,7 @@ class DataParallelCOMET(BaseCOMETModel):
             gpus=1, 
             num_workers=0, 
             accelerator=acc,
-            strategy=SingleDeviceStrategy(device=device_name)
+            strategy=SingleDeviceStrategy(device=device_name) if device_name == "npu" else "auto"
         )
         
         # return comet_output.scores #for example: [0.84, 0.77, ...]
