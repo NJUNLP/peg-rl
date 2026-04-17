@@ -53,8 +53,6 @@ git clone https://github.com/dgme-syz/COMET.git && cd COMET && git checkout feat
 
 Then, prepare the dependencies required for the training framework: 
 
-```
-
 ```bash
 USE_SGLANG=0 USE_MEGATRON=0 bash scripts/install_vllm_sglang_mcore.sh
 pip install sacrebleu "sacrebleu[ja]" "sacrebleu[ko]" 
